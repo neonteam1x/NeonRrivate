@@ -1,9 +1,10 @@
--- NEON PRIVATE ULTIMATE - ALL FEATURES
+-- NEON PRIVATE ULTIMATE - COMPLETE SCRIPT
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 local Lighting = game:GetService("Lighting")
 local UIS = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
 
 -- НАСТРОЙКИ
 local Settings = {
@@ -18,17 +19,30 @@ local Settings = {
     Speed = 20,
     SpeedEnabled = true,
     FullBright = true,
-    NoEyes = true,
     FOV = 70,
     FOVEnabled = true,
     
-    -- WARNING
+    -- NO DAMAGE SYSTEM
+    NoDamage_Eyes = true,
+    NoDamage_Glitch = true,
+    NoDamage_Screech = true,
+    NoDamage_Jack = true,
+    NoDamage_Snare = true,
+    NoDamage_Timothy = true,
+    NoDamage_Shadow = true,
+    NoDamage_Whisper = true,
+    NoDamage_A90 = true,
+    
+    -- SPECIAL OPTIONS
+    NoSeekSpawn = true,
+    
+    -- WARNING SYSTEM
     WarningSystem = true,
     WarningSound = true,
     CustomVolume = 0.5
 }
 
--- МОНСТРЫ ДЛЯ WARNING SYSTEM
+-- ВСЕ МОНСТРЫ ИЗ DOORS
 local AllMonsters = {
     "Rush", "Ambush", "Seek", "Figure", "Eyes", "Halt", "Glitch",
     "Screech", "Timothy", "Jack", "Snare", "Hide", 
@@ -42,15 +56,28 @@ local highlights = {}
 local currentWarnings = {}
 local warningFrame = nil
 
--- FULLBRIGHT
-if Settings.FullBright then
-    Lighting.FogEnd = 1000000
-    Lighting.GlobalShadows = false
+-- FULLBRIGHT FUNCTION
+local function updateFullBright()
+    if Settings.FullBright then
+        Lighting.FogEnd = 1000000
+        Lighting.GlobalShadows = false
+        Lighting.Ambient = Color3.new(0.5, 0.5, 0.5)
+        Lighting.Brightness = 2
+    else
+        Lighting.FogEnd = 100
+        Lighting.GlobalShadows = true
+        Lighting.Ambient = Color3.new(0, 0, 0)
+        Lighting.Brightness = 1
+    end
 end
 
--- FOV
-if Settings.FOVEnabled then
-    workspace.CurrentCamera.FieldOfView = Settings.FOV
+-- FOV FUNCTION
+local function updateFOV()
+    if Settings.FOVEnabled then
+        workspace.CurrentCamera.FieldOfView = Settings.FOV
+    else
+        workspace.CurrentCamera.FieldOfView = 70
+    end
 end
 
 -- SPEED HACK
@@ -61,6 +88,7 @@ spawn(function()
                 if Settings.SpeedEnabled then
                     local currentSpeed = player.Character.Humanoid.WalkSpeed
                     local targetSpeed = math.min(Settings.Speed, 50)
+                    
                     if math.abs(currentSpeed - targetSpeed) > 1 then
                         player.Character.Humanoid.WalkSpeed = currentSpeed + (targetSpeed - currentSpeed) * 0.3
                     else
@@ -74,6 +102,155 @@ spawn(function()
     end
 end)
 
+-- NO DAMAGE SYSTEM
+local function setupNoDamage()
+    -- ЗАЩИТА ОТ EYES
+    if Settings.NoDamage_Eyes then
+        pcall(function()
+            for _, conn in pairs(getconnections(game:GetService("Players").LocalPlayer.PlayerGui.ChildAdded)) do
+                conn:Disable()
+            end
+        end)
+    end
+    
+    -- ЗАЩИТА ОТ GLITCH
+    if Settings.NoDamage_Glitch then
+        spawn(function()
+            while wait(0.5) do
+                pcall(function()
+                    for _, obj in pairs(workspace:GetDescendants()) do
+                        if obj.Name:lower():find("glitch") and obj:IsA("Part") then
+                            obj:Destroy()
+                        end
+                    end
+                end)
+            end
+        end)
+    end
+    
+    -- ЗАЩИТА ОТ SCREECH
+    if Settings.NoDamage_Screech then
+        spawn(function()
+            while wait(0.3) do
+                pcall(function()
+                    for _, obj in pairs(workspace:GetDescendants()) do
+                        if obj.Name:lower():find("screech") and obj:IsA("Part") then
+                            obj:Destroy()
+                        end
+                    end
+                end)
+            end
+        end)
+    end
+    
+    -- ЗАЩИТА ОТ JACK
+    if Settings.NoDamage_Jack then
+        spawn(function()
+            while wait(0.4) do
+                pcall(function()
+                    for _, obj in pairs(workspace:GetDescendants()) do
+                        if obj.Name:lower():find("jack") and obj:IsA("Part") then
+                            obj:Destroy()
+                        end
+                    end
+                end)
+            end
+        end)
+    end
+    
+    -- ЗАЩИТА ОТ SNARE
+    if Settings.NoDamage_Snare then
+        spawn(function()
+            while wait(0.3) do
+                pcall(function()
+                    for _, obj in pairs(workspace:GetDescendants()) do
+                        if obj.Name:lower():find("snare") and obj:IsA("Part") then
+                            obj:Destroy()
+                        end
+                    end
+                end)
+            end
+        end)
+    end
+    
+    -- ЗАЩИТА ОТ TIMOTHY
+    if Settings.NoDamage_Timothy then
+        spawn(function()
+            while wait(0.5) do
+                pcall(function()
+                    for _, obj in pairs(workspace:GetDescendants()) do
+                        if obj.Name:lower():find("timothy") and obj:IsA("Part") then
+                            obj:Destroy()
+                        end
+                    end
+                end)
+            end
+        end)
+    end
+    
+    -- ЗАЩИТА ОТ SHADOW
+    if Settings.NoDamage_Shadow then
+        spawn(function()
+            while wait(0.4) do
+                pcall(function()
+                    for _, obj in pairs(workspace:GetDescendants()) do
+                        if obj.Name:lower():find("shadow") and obj:IsA("Part") then
+                            obj:Destroy()
+                        end
+                    end
+                end)
+            end
+        end)
+    end
+    
+    -- ЗАЩИТА ОТ WHISPER
+    if Settings.NoDamage_Whisper then
+        spawn(function()
+            while wait(0.4) do
+                pcall(function()
+                    for _, obj in pairs(workspace:GetDescendants()) do
+                        if obj.Name:lower():find("whisper") and obj:IsA("Part") then
+                            obj:Destroy()
+                        end
+                    end
+                end)
+            end
+        end)
+    end
+    
+    -- ЗАЩИТА ОТ A-90
+    if Settings.NoDamage_A90 then
+        spawn(function()
+            while wait(0.3) do
+                pcall(function()
+                    for _, obj in pairs(workspace:GetDescendants()) do
+                        if (obj.Name:lower():find("a-90") or obj.Name:lower():find("a90")) and obj:IsA("Part") then
+                            obj:Destroy()
+                        end
+                    end
+                end)
+            end
+        end)
+    end
+end
+
+-- NO SEEK SPAWN
+local function setupNoSeekSpawn()
+    if Settings.NoSeekSpawn then
+        spawn(function()
+            while wait(0.3) do
+                pcall(function()
+                    for _, obj in pairs(workspace:GetDescendants()) do
+                        if obj.Name:lower():find("seek") and obj:IsA("Part") then
+                            obj:Destroy()
+                        end
+                    end
+                end)
+            end
+        end)
+    end
+end
+
 -- ESP FUNCTION
 local function createESP(obj, color, text)
     if obj:FindFirstChild("I.S.-1_ESP") then 
@@ -83,7 +260,31 @@ local function createESP(obj, color, text)
         obj:FindFirstChild("ESP_Label"):Destroy()
     end
 
+    -- ФИЛЬТР ДЛЯ ДВЕРЕЙ
+    if string.find(string.lower(obj.Name), "door") then
+        local hasNumber = false
+        local isBarricaded = false
+        
+        for _, part in pairs(obj:GetDescendants()) do
+            if part:IsA("TextLabel") or part:IsA("SurfaceGui") then
+                if part.Text and string.match(part.Text, "%d") then
+                    hasNumber = true
+                    break
+                end
+            end
+            if part.Name:lower():find("barricade") or part.Name:lower():find("board") then
+                isBarricaded = true
+                break
+            end
+        end
+        
+        if isBarricaded or not hasNumber then
+            return
+        end
+    end
+
     local isCorrectObject = false
+    
     if string.find(string.lower(obj.Name), "key") then
         if obj:IsA("Model") and obj.PrimaryPart then
             isCorrectObject = true
@@ -104,6 +305,7 @@ local function createESP(obj, color, text)
     highlight.OutlineColor = color
     highlight.FillTransparency = 0.9
     highlight.OutlineTransparency = 0.2
+    highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
     highlight.Parent = obj
     
     local billboard = Instance.new("BillboardGui")
@@ -121,6 +323,7 @@ local function createESP(obj, color, text)
     label.TextColor3 = color
     label.TextStrokeColor3 = Color3.new(0, 0, 0)
     label.TextStrokeTransparency = 0
+    label.TextScaled = false
     label.TextSize = 12
     label.Font = Enum.Font.SourceSansBold
     label.Parent = billboard
@@ -132,7 +335,9 @@ end
 -- CLEAR ESP
 local function clearESP()
     for obj, highlight in pairs(highlights) do
-        if highlight then highlight:Destroy() end
+        if highlight then
+            highlight:Destroy()
+        end
         if obj and obj.Parent and obj:FindFirstChild("ESP_Label") then
             obj:FindFirstChild("ESP_Label"):Destroy()
         end
@@ -144,48 +349,39 @@ end
 local function updateESP()
     clearESP()
     
-    local function searchInLocation(location)
-        if not location then return end
-        
-        if Settings.ESP_Keys then
-            for _, obj in pairs(location:GetDescendants()) do
-                if obj:IsA("Model") and string.find(string.lower(obj.Name), "key") then
-                    if obj.PrimaryPart or obj:FindFirstChildWhichIsA("BasePart") then
-                        createESP(obj, Color3.new(0, 1, 0), "KEY")
-                    end
-                end
-            end
-        end
-        
-        if Settings.ESP_Levers then
-            for _, obj in pairs(location:GetDescendants()) do
-                if obj:IsA("Model") and (string.find(string.lower(obj.Name), "lever") or string.find(string.lower(obj.Name), "switch")) then
-                    createESP(obj, Color3.new(1, 0, 0), "LEVER")
-                end
-            end
-        end
-        
-        if Settings.ESP_Coins then
-            for _, obj in pairs(location:GetDescendants()) do
-                if obj:IsA("Model") and string.find(string.lower(obj.Name), "coin") then
-                    createESP(obj, Color3.new(1, 1, 0), "COIN")
-                end
-            end
-        end
-        
-        if Settings.ESP_Doors then
-            for _, obj in pairs(location:GetDescendants()) do
-                if obj:IsA("Model") and string.find(string.lower(obj.Name), "door") then
-                    local isMainDoor = obj.PrimaryPart or obj:FindFirstChild("Door") or obj:FindFirstChild("Knob")
-                    if isMainDoor then
-                        createESP(obj, Color3.new(0, 0.5, 1), "DOOR")
-                    end
+    if Settings.ESP_Keys then
+        for _, obj in pairs(workspace:GetDescendants()) do
+            if obj:IsA("Model") and string.find(string.lower(obj.Name), "key") then
+                if obj.PrimaryPart or obj:FindFirstChildWhichIsA("BasePart") then
+                    createESP(obj, Color3.new(0, 1, 0), "KEY")
                 end
             end
         end
     end
     
-    searchInLocation(workspace)
+    if Settings.ESP_Levers then
+        for _, obj in pairs(workspace:GetDescendants()) do
+            if obj:IsA("Model") and (string.find(string.lower(obj.Name), "lever") or string.find(string.lower(obj.Name), "switch")) then
+                createESP(obj, Color3.new(1, 0, 0), "LEVER")
+            end
+        end
+    end
+    
+    if Settings.ESP_Coins then
+        for _, obj in pairs(workspace:GetDescendants()) do
+            if obj:IsA("Model") and string.find(string.lower(obj.Name), "coin") then
+                createESP(obj, Color3.new(1, 1, 0), "COIN")
+            end
+        end
+    end
+    
+    if Settings.ESP_Doors then
+        for _, obj in pairs(workspace:GetDescendants()) do
+            if obj:IsA("Model") and string.find(string.lower(obj.Name), "door") then
+                createESP(obj, Color3.new(0, 0.5, 1), "DOOR")
+            end
+        end
+    end
     
     if Settings.ESP_Players then
         for _, plr in pairs(Players:GetPlayers()) do
@@ -258,6 +454,7 @@ local function showWarning(entityName)
         sound.Volume = Settings.CustomVolume
         sound.Parent = warningLabel
         sound:Play()
+        
         sound.Ended:Connect(function()
             sound:Destroy()
         end)
@@ -273,6 +470,7 @@ local function showWarning(entityName)
                 TextTransparency = 1
             })
             tweenOut:Play()
+            
             tweenOut.Completed:Connect(function()
                 if warningLabel then
                     warningLabel:Destroy()
@@ -283,8 +481,9 @@ local function showWarning(entityName)
     end)
 end
 
+-- СИСТЕМА ОБНАРУЖЕНИЯ МОНСТРОВ
 local function detectEntities()
-    while wait(0.5) do
+    while wait(1) do
         if not Settings.WarningSystem then 
             for entityName, label in pairs(currentWarnings) do
                 if label then
@@ -296,13 +495,26 @@ local function detectEntities()
         end
         
         pcall(function()
-            for _, obj in pairs(workspace:GetDescendants()) do
-                local objName = string.lower(obj.Name)
-                for _, monster in pairs(AllMonsters) do
-                    local monsterLower = string.lower(monster)
-                    if string.find(objName, monsterLower) then
-                        showWarning(monster)
-                        break
+            for _, obj in pairs(workspace:GetChildren()) do
+                if obj:IsA("Model") then
+                    local objName = string.lower(obj.Name)
+                    local humanoid = obj:FindFirstChild("Humanoid")
+                    local rootPart = obj:FindFirstChild("HumanoidRootPart")
+                    
+                    if humanoid and rootPart and humanoid.Health > 0 then
+                        for _, monster in pairs(AllMonsters) do
+                            local monsterLower = string.lower(monster)
+                            if string.find(objName, monsterLower) then
+                                local distance = (player.Character and player.Character:FindFirstChild("HumanoidRootPart")) 
+                                    and (player.Character.HumanoidRootPart.Position - rootPart.Position).Magnitude 
+                                    or 1000
+                                
+                                if distance < 100 then
+                                    showWarning(monster)
+                                end
+                                break
+                            end
+                        end
                     end
                 end
             end
@@ -310,40 +522,7 @@ local function detectEntities()
     end
 end
 
--- ANTI EYES
-if Settings.NoEyes then
-    pcall(function()
-        for _, conn in pairs(getconnections(game:GetService("Players").LocalPlayer.PlayerGui.ChildAdded)) do
-            conn:Disable()
-        end
-    end)
-end
-
--- GUI (УПРОЩЕННАЯ ВЕРСИЯ)
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "NEON_MAIN"
-ScreenGui.Parent = game.CoreGui
-
-local OpenBtn = Instance.new("TextButton")
-OpenBtn.Text = "NEON"
-OpenBtn.Size = UDim2.new(0, 80, 0, 40)
-OpenBtn.Position = UDim2.new(0, 10, 0, 10)
-OpenBtn.BackgroundColor3 = Color3.new(0, 0, 0)
-OpenBtn.TextColor3 = Color3.new(1, 1, 1)
-OpenBtn.TextScaled = true
-OpenBtn.ZIndex = 10
-OpenBtn.Parent = ScreenGui
-
-local MainFrame = Instance.new("Frame")
-MainFrame.Size = UDim2.new(0, 200, 0, 300)
-MainFrame.Position = UDim2.new(0, 90, 0, 10)
-MainFrame.BackgroundColor3 = Color3.new(0, 0, 0)
-MainFrame.BackgroundTransparency = 0.1
-MainFrame.Visible = false
-MainFrame.ZIndex = 5
-MainFrame.Parent = ScreenGui
-
--- ЗАПУСК СИСТЕМ
+-- ЗАПУСК ВСЕХ СИСТЕМ
 spawn(detectEntities)
 spawn(function()
     while wait(2) do
@@ -352,6 +531,10 @@ spawn(function()
 end)
 
 -- НАЧАЛЬНАЯ НАСТРОЙКА
+updateFullBright()
+updateFOV()
 updateESP()
+setupNoDamage()
+setupNoSeekSpawn()
 
-print("NEON PRIVATE ULTIMATE - ALL SYSTEMS GO!")
+print("NEON PRIVATE ULTIMATE - ALL SYSTEMS ACTIVE")
