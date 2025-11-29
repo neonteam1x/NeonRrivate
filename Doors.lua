@@ -1,4 +1,4 @@
--- NEON PRIVATE ULTIMATE - COMPLETE SCRIPT
+-- NEON PRIVATE ULTIMATE - FINAL VERSION
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 local Lighting = game:GetService("Lighting")
@@ -522,6 +522,287 @@ local function detectEntities()
     end
 end
 
+-- МЕНЮ
+local function createGUI()
+    local ScreenGui = Instance.new("ScreenGui")
+    ScreenGui.Name = "NEON_MAIN_MENU"
+    ScreenGui.Parent = game.CoreGui
+
+    -- КНОПКА ОТКРЫТИЯ
+    local OpenBtn = Instance.new("TextButton")
+    OpenBtn.Text = "NEON"
+    OpenBtn.Size = UDim2.new(0, 80, 0, 40)
+    OpenBtn.Position = UDim2.new(0, 10, 0, 10)
+    OpenBtn.BackgroundColor3 = Color3.new(0, 0, 0)
+    OpenBtn.TextColor3 = Color3.new(1, 1, 1)
+    OpenBtn.TextScaled = true
+    OpenBtn.ZIndex = 10
+    OpenBtn.Parent = ScreenGui
+
+    local btnCorner = Instance.new("UICorner")
+    btnCorner.CornerRadius = UDim.new(0, 8)
+    btnCorner.Parent = OpenBtn
+
+    local btnStroke = Instance.new("UIStroke")
+    btnStroke.Color = Color3.new(1, 1, 1)
+    btnStroke.Thickness = 2
+    btnStroke.Parent = OpenBtn
+
+    -- ОСНОВНОЕ МЕНЮ
+    local MainFrame = Instance.new("Frame")
+    MainFrame.Size = UDim2.new(0, 250, 0, 400)
+    MainFrame.Position = UDim2.new(0, 90, 0, 10)
+    MainFrame.BackgroundColor3 = Color3.new(0, 0, 0)
+    MainFrame.BackgroundTransparency = 0.1
+    MainFrame.Visible = false
+    MainFrame.ZIndex = 5
+    MainFrame.Parent = ScreenGui
+
+    local mainCorner = Instance.new("UICorner")
+    mainCorner.CornerRadius = UDim.new(0, 12)
+    mainCorner.Parent = MainFrame
+
+    local mainStroke = Instance.new("UIStroke")
+    mainStroke.Color = Color3.new(1, 1, 1)
+    mainStroke.Thickness = 3
+    mainStroke.Parent = MainFrame
+
+    -- ЗАГОЛОВОК
+    local Title = Instance.new("TextLabel")
+    Title.Text = "NEON PRIVATE"
+    Title.Size = UDim2.new(1, 0, 0, 40)
+    Title.BackgroundColor3 = Color3.new(0, 0, 0)
+    Title.TextColor3 = Color3.new(1, 1, 1)
+    Title.TextScaled = true
+    Title.ZIndex = 6
+    Title.Parent = MainFrame
+
+    local titleCorner = Instance.new("UICorner")
+    titleCorner.CornerRadius = UDim.new(0, 8)
+    titleCorner.Parent = Title
+
+    local titleStroke = Instance.new("UIStroke")
+    titleStroke.Color = Color3.new(1, 1, 1)
+    titleStroke.Thickness = 2
+    titleStroke.Parent = Title
+
+    -- ВКЛАДКИ
+    local Tabs = {"ESP", "LOCAL", "WARNING"}
+    local CurrentTab = "ESP"
+
+    local TabFrame = Instance.new("Frame")
+    TabFrame.Size = UDim2.new(1, 0, 0, 35)
+    TabFrame.Position = UDim2.new(0, 0, 0, 45)
+    TabFrame.BackgroundTransparency = 1
+    TabFrame.ZIndex = 6
+    TabFrame.Parent = MainFrame
+
+    -- КНОПКИ ВКЛАДОК
+    local tabButtons = {}
+    for i, tabName in pairs(Tabs) do
+        local TabBtn = Instance.new("TextButton")
+        TabBtn.Text = tabName
+        TabBtn.Size = UDim2.new(0.3, 0, 1, 0)
+        TabBtn.Position = UDim2.new((i-1)*0.33, 5, 0, 0)
+        TabBtn.BackgroundColor3 = tabName == CurrentTab and Color3.new(0.3, 0.3, 0.3) or Color3.new(0.1, 0.1, 0.1)
+        TabBtn.TextColor3 = Color3.new(1, 1, 1)
+        TabBtn.TextScaled = true
+        TabBtn.ZIndex = 6
+        TabBtn.Parent = TabFrame
+        
+        local tabCorner = Instance.new("UICorner")
+        tabCorner.CornerRadius = UDim.new(0, 6)
+        tabCorner.Parent = TabBtn
+        
+        local tabStroke = Instance.new("UIStroke")
+        tabStroke.Color = Color3.new(1, 1, 1)
+        tabStroke.Thickness = 1
+        tabStroke.Parent = TabBtn
+        
+        TabBtn.MouseButton1Click:Connect(function()
+            CurrentTab = tabName
+            updateButtons()
+        end)
+        
+        tabButtons[tabName] = TabBtn
+    end
+
+    -- ФУНКЦИЯ ОБНОВЛЕНИЯ КНОПОК
+    local buttonInstances = {}
+    
+    local function updateButtons()
+        for tabName, btn in pairs(tabButtons) do
+            btn.BackgroundColor3 = tabName == CurrentTab and Color3.new(0.3, 0.3, 0.3) or Color3.new(0.1, 0.1, 0.1)
+        end
+        
+        for settingName, button in pairs(buttonInstances) do
+            button.Visible = false
+        end
+        
+        -- ПОКАЗЫВАЕМ КНОПКИ ТЕКУЩЕЙ ВКЛАДКИ
+        if CurrentTab == "ESP" then
+            if buttonInstances.ESP_Keys then buttonInstances.ESP_Keys.Visible = true end
+            if buttonInstances.ESP_Levers then buttonInstances.ESP_Levers.Visible = true end
+            if buttonInstances.ESP_Coins then buttonInstances.ESP_Coins.Visible = true end
+            if buttonInstances.ESP_Doors then buttonInstances.ESP_Doors.Visible = true end
+            if buttonInstances.ESP_Players then buttonInstances.ESP_Players.Visible = true end
+        elseif CurrentTab == "LOCAL" then
+            if buttonInstances.Speed then buttonInstances.Speed.Visible = true end
+            if buttonInstances.SpeedEnabled then buttonInstances.SpeedEnabled.Visible = true end
+            if buttonInstances.FullBright then buttonInstances.FullBright.Visible = true end
+            if buttonInstances.FOV then buttonInstances.FOV.Visible = true end
+            if buttonInstances.FOVEnabled then buttonInstances.FOVEnabled.Visible = true end
+            if buttonInstances.NoSeekSpawn then buttonInstances.NoSeekSpawn.Visible = true end
+            -- NO DAMAGE КНОПКИ
+            if buttonInstances.NoDamage_Eyes then buttonInstances.NoDamage_Eyes.Visible = true end
+            if buttonInstances.NoDamage_Glitch then buttonInstances.NoDamage_Glitch.Visible = true end
+            if buttonInstances.NoDamage_Screech then buttonInstances.NoDamage_Screech.Visible = true end
+            if buttonInstances.NoDamage_Jack then buttonInstances.NoDamage_Jack.Visible = true end
+            if buttonInstances.NoDamage_Snare then buttonInstances.NoDamage_Snare.Visible = true end
+            if buttonInstances.NoDamage_Timothy then buttonInstances.NoDamage_Timothy.Visible = true end
+            if buttonInstances.NoDamage_Shadow then buttonInstances.NoDamage_Shadow.Visible = true end
+            if buttonInstances.NoDamage_Whisper then buttonInstances.NoDamage_Whisper.Visible = true end
+            if buttonInstances.NoDamage_A90 then buttonInstances.NoDamage_A90.Visible = true end
+        elseif CurrentTab == "WARNING" then
+            if buttonInstances.WarningSystem then buttonInstances.WarningSystem.Visible = true end
+            if buttonInstances.WarningSound then buttonInstances.WarningSound.Visible = true end
+            if buttonInstances.CustomVolume then buttonInstances.CustomVolume.Visible = true end
+        end
+    end
+
+    -- СОЗДАНИЕ КНОПОК
+    local function createButton(text, yPos, settingName, isSlider)
+        local button = Instance.new("TextButton")
+        button.Name = text
+        local displayText = isSlider and (text .. ": " .. Settings[settingName]) or (text .. ": " .. (Settings[settingName] and "ON" or "OFF"))
+        button.Text = displayText
+        button.Size = UDim2.new(0.9, 0, 0, 35)
+        button.Position = UDim2.new(0.05, 0, 0, yPos)
+        button.BackgroundColor3 = Color3.new(0, 0, 0)
+        button.TextColor3 = Color3.new(1, 1, 1)
+        button.TextScaled = true
+        button.Visible = false
+        button.ZIndex = 6
+        button.Parent = MainFrame
+        
+        local buttonCorner = Instance.new("UICorner")
+        buttonCorner.CornerRadius = UDim.new(0, 8)
+        buttonCorner.Parent = button
+        
+        local buttonStroke = Instance.new("UIStroke")
+        buttonStroke.Color = Color3.new(1, 1, 1)
+        buttonStroke.Thickness = 2
+        buttonStroke.Parent = button
+        
+        button.MouseButton1Click:Connect(function()
+            if isSlider then
+                local newValue = Settings[settingName] + (UIS:IsKeyDown(Enum.KeyCode.LeftShift) and -5 or 5)
+                if settingName == "FOV" then
+                    newValue = math.clamp(newValue, 50, 120)
+                    Settings[settingName] = newValue
+                    updateFOV()
+                elseif settingName == "Speed" then
+                    newValue = math.clamp(newValue, 16, 50)
+                    Settings[settingName] = newValue
+                elseif settingName == "CustomVolume" then
+                    newValue = math.clamp(newValue, 0, 1)
+                    Settings[settingName] = newValue
+                end
+                button.Text = text .. ": " .. newValue
+            else
+                Settings[settingName] = not Settings[settingName]
+                button.Text = text .. ": " .. (Settings[settingName] and "ON" or "OFF")
+                
+                -- ОБНОВЛЕНИЕ ФУНКЦИЙ
+                if string.find(settingName, "ESP") then
+                    updateESP()
+                elseif settingName == "FullBright" then
+                    updateFullBright()
+                elseif settingName == "FOVEnabled" then
+                    updateFOV()
+                elseif settingName == "SpeedEnabled" then
+                    -- Speed handled in main loop
+                elseif string.find(settingName, "NoDamage") or settingName == "NoSeekSpawn" then
+                    setupNoDamage()
+                    setupNoSeekSpawn()
+                end
+            end
+        end)
+        
+        buttonInstances[settingName] = button
+        return button
+    end
+
+    -- СОЗДАЕМ ВСЕ КНОПКИ
+    -- ESP TAB
+    createButton("Keys", 90, "ESP_Keys")
+    createButton("Levers", 130, "ESP_Levers")
+    createButton("Coins", 170, "ESP_Coins")
+    createButton("Doors", 210, "ESP_Doors")
+    createButton("Players", 250, "ESP_Players")
+    
+    -- LOCAL TAB
+    createButton("Speed", 90, "Speed", true)
+    createButton("Speed Toggle", 130, "SpeedEnabled")
+    createButton("FullBright", 170, "FullBright")
+    createButton("FOV", 210, "FOV", true)
+    createButton("FOV Toggle", 250, "FOVEnabled")
+    createButton("No Seek Spawn", 290, "NoSeekSpawn")
+    -- NO DAMAGE КНОПКИ
+    createButton("No Eyes", 330, "NoDamage_Eyes")
+    createButton("No Glitch", 370, "NoDamage_Glitch")
+    createButton("No Screech", 410, "NoDamage_Screech")
+    createButton("No Jack", 450, "NoDamage_Jack")
+    createButton("No Snare", 490, "NoDamage_Snare")
+    createButton("No Timothy", 530, "NoDamage_Timothy")
+    createButton("No Shadow", 570, "NoDamage_Shadow")
+    createButton("No Whisper", 610, "NoDamage_Whisper")
+    createButton("No A-90", 650, "NoDamage_A90")
+    
+    -- WARNING TAB
+    createButton("Warning System", 90, "WarningSystem")
+    createButton("Warning Sound", 130, "WarningSound")
+    createButton("Sound Volume", 170, "CustomVolume", true)
+
+    -- ОТКРЫТИЕ/ЗАКРЫТИЕ МЕНЮ
+    OpenBtn.MouseButton1Click:Connect(function()
+        MainFrame.Visible = not MainFrame.Visible
+    end)
+
+    -- ПЕРЕТАСКИВАНИЕ
+    local dragging, dragInput, dragStart, startPos
+
+    MainFrame.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+            dragStart = input.Position
+            startPos = MainFrame.Position
+        end
+    end)
+
+    MainFrame.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Touch then
+            dragInput = input
+        end
+    end)
+
+    MainFrame.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Touch then
+            dragging = false
+        end
+    end)
+
+    UIS.InputChanged:Connect(function(input)
+        if dragging and input == dragInput then
+            local delta = input.Position - dragStart
+            MainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        end
+    end)
+
+    -- ПЕРВОНАЧАЛЬНАЯ НАСТРОЙКА
+    updateButtons()
+end
+
 -- ЗАПУСК ВСЕХ СИСТЕМ
 spawn(detectEntities)
 spawn(function()
@@ -536,5 +817,6 @@ updateFOV()
 updateESP()
 setupNoDamage()
 setupNoSeekSpawn()
+createGUI()
 
 print("NEON PRIVATE ULTIMATE - ALL SYSTEMS ACTIVE")
